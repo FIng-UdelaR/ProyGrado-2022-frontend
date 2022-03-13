@@ -31,7 +31,7 @@ function App() {
                   />
                   <Route path="/orders" element={<WorkFlowList />} />
                   <Route
-                    path="/machine/detail/:uri"
+                    path="/machine/detail/:uri/:name"
                     element={<MachineDetail />}
                   />
                   <Route path="/simulations" element={<SimulationPreview />} />

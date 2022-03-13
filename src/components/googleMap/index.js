@@ -39,6 +39,7 @@ const CustomMapContainer = ({
   } = useContext(MapContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedMachine, setSelectedMachine] = React.useState(null);
   const [showMachineInfo, setShowMachineInfo] = React.useState(false);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const CustomMapContainer = ({
 
   const onMarkerClick = (machine) => (event) => {
     const markerId = machine.id;
+    setSelectedMachine(machine);
     setShowMachineInfo(true);
     const index = machines.findIndex((m) => m.id === markerId);
     setAnchorEl(event.currentTarget);
@@ -110,6 +112,7 @@ const CustomMapContainer = ({
         {machines && showMachineInfo && (
           <CustomPopUp
             // store={popupInfo}
+            selectedMachine={selectedMachine}
             anchorEl={anchorEl}
             handleClose={handleClose}
             open={showMachineInfo}

@@ -92,7 +92,9 @@ const NewMachines = () => {
 
   return (
     <Container>
-      <h2 className="text-center mb-4 font-weight-bold">Add new machine</h2>
+      <h2 className="text-center mb-4 font-weight-bold">
+        Agregar nueva impresora
+      </h2>
 
       {alert ? <p className={alert.classes}> {alert.msg} </p> : null}
       <form onSubmit={submitNewMachine}>
@@ -114,7 +116,7 @@ const NewMachines = () => {
             >
               <TextField
                 id="machine-name"
-                label="Machine name"
+                label="Nombre de impresora"
                 variant="outlined"
                 onChange={(e) => setName(e.target.value)}
                 name="name"
@@ -125,7 +127,7 @@ const NewMachines = () => {
             <div>
               <FormControl sx={{ m: 1, minWidth: 300 }}>
                 <InputLabel id="supportedMaterial-label">
-                  Supported material
+                  Materiales soportados
                 </InputLabel>
                 <Select
                   labelId="supportedMaterial-label"
@@ -143,7 +145,7 @@ const NewMachines = () => {
             <div>
               <FormControl sx={{ m: 1, width: 300 }}>
                 <InputLabel id="supportedSizes-label">
-                  Supported sizes
+                  Tamaños soportados
                 </InputLabel>
                 <Select
                   labelId="supportedSizes-label"
@@ -181,7 +183,7 @@ const NewMachines = () => {
             <div>
               <FormControl sx={{ m: 1, width: 300 }}>
                 <InputLabel id="supportedQualities-label">
-                  Supported qualities
+                  Calidades soportadas
                 </InputLabel>
                 <Select
                   labelId="supportedQualities-label"
@@ -241,21 +243,19 @@ const NewMachines = () => {
               onClick={() => navigate("/")}
               variant="contained"
             >
-              Back
+              Atras
             </Button>
 
             <Button style={{ width: "45%" }} type="submit" variant="contained">
-              Add
+              Agregar
             </Button>
           </Box>
         </Box>
       </form>
-      {loading ? <p>Loading...</p> : null}
+      {loading ? <p>Cargando...</p> : null}
 
       {error ? (
-        <p className="alert alert-danger p2 mt-4 text-center">
-          There was an error
-        </p>
+        <p className="alert alert-danger p2 mt-4 text-center">Hubo un error</p>
       ) : null}
     </Container>
   );

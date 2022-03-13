@@ -46,11 +46,15 @@ const Container = styled.div`
 
 const ProgressBar = (props) => {
   const { percent, max, color, width } = props;
+  console.log(
+    "🚀 ~ file: ProgressBar.js ~ line 49 ~ ProgressBar ~ percent",
+    percent
+  );
   const [value, setValue] = useState(0);
 
   useEffect(() => {
     setValue(percent * width);
-  });
+  }, [percent]);
 
   return (
     <Container color={color} width={width}>

@@ -10,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles({
@@ -29,15 +30,24 @@ const WorkFlowList = (props) => {
   }, []);
 
   return (
-    <FlexBox direction="column" justifyContent="flex-start">
-      <h4>Orders</h4>
+    <FlexBox direction="column" justifyContent="flex-start" width={"90%"}>
+      <Typography
+        variant="h4"
+        sx={{
+          margin: 2,
+          fontFamily: "sans-serif",
+          fontWeight: "bold",
+        }}
+      >
+        Lista de órdenes
+      </Typography>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
             <TableRow>
+              <TableCell></TableCell>
               <TableCell>ID</TableCell>
-              <TableCell>Progress</TableCell>
-              <TableCell>Machines</TableCell>
+              <TableCell>Progreso</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

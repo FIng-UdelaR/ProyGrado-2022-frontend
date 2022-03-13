@@ -1,9 +1,43 @@
-import { Badge, Box, Switch, Typography } from "@mui/material";
+import {
+  Badge,
+  Box,
+  Grid,
+  Paper,
+  Switch,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import { eventType, Status, WorkStatus } from "../../utils/enum";
-import { FaBox, FaPalette } from "react-icons/fa";
+import { FaBox, FaPalette, FaExclamationTriangle } from "react-icons/fa";
 import { colorHEX } from "../../utils/helpers";
 import { IconContext } from "react-icons";
+import { styled } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const SimulationPreview = (props) => {
   const [simulationLines, setSimulationLines] = useState([]);
@@ -27,10 +61,6 @@ const SimulationPreview = (props) => {
   });
 
   useEffect(() => {
-    console.log(orders);
-  }, [orders]);
-
-  useEffect(() => {
     if (simulationLines.length) setLine(1);
   }, [simulationLines]);
 
@@ -40,7 +70,7 @@ const SimulationPreview = (props) => {
         processNewLine(lineRef.current, simulationLinesRef.current);
         setLine((prevLine) => prevLine + 1);
       }
-    }, 250);
+    }, 180);
     return () => clearInterval(interval);
   }, []);
 
@@ -50,10 +80,6 @@ const SimulationPreview = (props) => {
     const work = workId.substr(index + 1);
     switch (action) {
       case eventType.NEW_WORK_ADDED:
-        console.log(
-          "🚀 ~ file: SimulationPreview.js ~ line 51 ~ updateOrder ~ workId",
-          workId
-        );
         setOrders((prevState) => ({
           ...prevState,
           [orderId]: {
@@ -80,6 +106,12 @@ const SimulationPreview = (props) => {
           [workId]: WorkStatus.FINISHED,
         }));
         break;
+      case eventType.WORK_REMOVED:
+        setWorksStatus((prevState) => ({
+          ...prevState,
+          [workId]: WorkStatus.PENDING,
+        }));
+        break;
       default:
         break;
     }
@@ -89,11 +121,6 @@ const SimulationPreview = (props) => {
     if (newLine < simulation?.length) {
       const row = simulation[newLine];
       const values = row?.split(";") || [];
-      console.log(
-        "🚀 ~ file: SimulationPreview.js ~ line 95 ~ processNewLine ~ values[2]",
-        values[2]
-      );
-
       if (values.length) {
         switch (values[2]) {
           case eventType.MACHINE_CREATED:
@@ -111,7 +138,7 @@ const SimulationPreview = (props) => {
               ...prevState,
               [values[1]]: {
                 ...prevState[values[1]],
-                status: [values[3]],
+                status: values[3],
               },
             }));
             break;
@@ -158,6 +185,26 @@ const SimulationPreview = (props) => {
             updateOrder(eventType.WORK_FINISHED, values[3]);
 
             break;
+          case eventType.WORK_REMOVED:
+            const index2 = machinesRef.current[values[1]]?.workload?.indexOf(
+              values[3]
+            );
+            {
+              if (index2 >= 0)
+                setMachines((prevState) => ({
+                  ...prevState,
+                  [values[1]]: {
+                    ...prevState[values[1]],
+                    currentWork: prevState[values[1]].workload?.splice(
+                      index2,
+                      1
+                    ),
+                  },
+                }));
+            }
+            updateOrder(eventType.WORK_REMOVED, values[3]);
+
+            break;
         }
       }
     }
@@ -170,98 +217,167 @@ const SimulationPreview = (props) => {
       const text = e.target.result;
       const lines = text.split("\n");
       setSimulationLines(lines);
-      console.log(lines.length);
     };
     reader.readAsText(e.target.files[0]);
   };
 
   return (
-    <div>
-      <input type="file" onChange={(e) => showFile(e)} />
-      {orders &&
-        Object.keys(orders).map((k) => (
-          <Box
-            margin="0.2rem 0"
-            display="flex"
-            justifyContent="space-between"
-            flexWrap="no-wrap"
-            key={k}
-          >
-            <IconContext.Provider
-              value={{
-                color: orders[k].color,
-                className: "global-class-name",
-              }}
-            >
-              <FaPalette style={{ margin: 5 }} />
-            </IconContext.Provider>
-            <Typography>{k}</Typography>
-            <Badge style={{ width: "25rem" }}>{orders[k].color}</Badge>
-            <Box
-              width="15rem"
-              display="flex"
-              justifyContent="flex-start"
-              flexWrap="wrap"
-            >
-              {orders[k].works?.map((w) => {
-                return (
-                  <IconContext.Provider
-                    value={{
-                      color:
-                        worksStatus[w] === WorkStatus.FINISHED
-                          ? "green"
-                          : worksStatus[w] === WorkStatus.FINISHED
-                          ? "red"
-                          : "",
-                      className: "global-class-name",
-                    }}
-                  >
-                    <FaBox style={{ margin: 5 }} />
-                  </IconContext.Provider>
-                );
-              })}
-            </Box>
-          </Box>
-        ))}
-      {machines &&
-        Object.keys(machines).map((k) => (
-          <Box
-            margin="0.5rem 0"
-            display="flex"
-            justifyContent="space-between"
-            flexWrap="no-wrap"
-            key={k}
-          >
-            <Typography>{k}</Typography>
-            <Badge style={{ width: "25rem" }}>{machines[k].currentWork}</Badge>
-            <Box
-              width="15rem"
-              display="flex"
-              justifyContent="flex-start"
-              flexWrap="wrap"
-            >
-              {machines[k].workload?.map((w) => {
-                const orderId = w.substring(0, w.length - 2);
-                const order = orders[orderId];
-                return (
-                  <IconContext.Provider
-                    value={{
-                      color: order?.color || "red",
-                      className: "global-class-name",
-                    }}
-                  >
-                    <FaBox
-                      style={{
-                        margin: 5,
-                      }}
-                    />
-                  </IconContext.Provider>
-                );
-              })}
-            </Box>
-          </Box>
-        ))}
-    </div>
+    <Grid container padding={5}>
+      <Grid item xs={12}>
+        <input type="file" onChange={(e) => showFile(e)} />
+      </Grid>
+      <Grid item xs={6} padding={2}>
+        <Typography width={"100%"} variant="h5" textAlign={"center"}>
+          Listado de Impresoras
+        </Typography>
+
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Nombre</StyledTableCell>
+                <StyledTableCell>Última tarea procesada</StyledTableCell>
+                <StyledTableCell>Tareas pendientes</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {machines &&
+                Object.keys(machines).map((k) => (
+                  <StyledTableRow key={k}>
+                    <StyledTableCell component="th" scope="row">
+                      {machines[k].status === "OFFLINE" ? (
+                        <Box display={"flex"}>
+                          <IconContext.Provider
+                            value={{
+                              color: "darkRed",
+                              className: "global-class-name",
+                            }}
+                          >
+                            <FaExclamationTriangle
+                              style={{
+                                margin: 5,
+                              }}
+                            />
+                          </IconContext.Provider>
+                          <Typography color={"darkRed"}>{k}</Typography>
+                        </Box>
+                      ) : (
+                        <Typography>{k}</Typography>
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Typography
+                        textOverflow={"ellipsis"}
+                        whiteSpace={"nowrap"}
+                        overflow={"hidden"}
+                        width={180}
+                      >
+                        {machines[k].currentWork}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Box
+                        width="200px"
+                        display="flex"
+                        justifyContent="flex-start"
+                        flexWrap="wrap"
+                      >
+                        {machines[k].workload?.map((w) => {
+                          const orderId = w.substring(0, w.length - 2);
+                          const order = orders[orderId];
+                          return (
+                            <IconContext.Provider
+                              value={{
+                                color: order?.color || "red",
+                                className: "global-class-name",
+                              }}
+                            >
+                              <FaBox
+                                style={{
+                                  margin: 5,
+                                }}
+                              />
+                            </IconContext.Provider>
+                          );
+                        })}
+                      </Box>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+      <Grid item xs={6} padding={2}>
+        <Typography width={"100%"} variant="h5" textAlign={"center"}>
+          Listado de órdenes
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>Identificador de orden</StyledTableCell>
+                <StyledTableCell>Tareas</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orders &&
+                Object.keys(orders).map((k) => (
+                  <StyledTableRow key={k}>
+                    <StyledTableCell component="th" scope="row">
+                      <IconContext.Provider
+                        value={{
+                          color: orders[k].color,
+                          className: "global-class-name",
+                        }}
+                      >
+                        <FaPalette style={{ margin: 5 }} />
+                      </IconContext.Provider>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Typography
+                        textOverflow={"ellipsis"}
+                        whiteSpace={"nowrap"}
+                        overflow={"hidden"}
+                        width={200}
+                      >
+                        {k}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Box
+                        width="15rem"
+                        display="flex"
+                        justifyContent="flex-start"
+                        flexWrap="wrap"
+                      >
+                        {orders[k].works?.map((w) => {
+                          return (
+                            <IconContext.Provider
+                              value={{
+                                color:
+                                  worksStatus[w] === WorkStatus.FINISHED
+                                    ? "green"
+                                    : worksStatus[w] === WorkStatus.FINISHED
+                                    ? "red"
+                                    : "",
+                                className: "global-class-name",
+                              }}
+                            >
+                              <FaBox style={{ margin: 5 }} />
+                            </IconContext.Provider>
+                          );
+                        })}
+                      </Box>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+    </Grid>
   );
 };
 

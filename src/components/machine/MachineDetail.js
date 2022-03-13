@@ -10,6 +10,7 @@ import GoogleMap from "../googleMap";
 const MachineDetail = () => {
   const { getMachineDetail, machine } = useContext(MachineContext);
 
+  const [name, setName] = useState("");
   let params = useParams();
   let navigate = useNavigate();
   const [location, setLocation] = useState({
@@ -18,6 +19,8 @@ const MachineDetail = () => {
   });
   useEffect(() => {
     const uriEncoded = params.uri;
+    const name = params.name;
+    setName(name);
     const uri = window.atob(uriEncoded.slice(1));
     const loadMachine = () => getMachineDetail(uri);
     loadMachine();
@@ -70,7 +73,7 @@ const MachineDetail = () => {
         component="div"
         marginBottom="50px"
       >
-        Machine Details
+        Detalles de {name}
       </Typography>
       <Grid item xs={12} md={8}>
         <Box display="flex" flexWrap="wrap">
@@ -90,7 +93,7 @@ const MachineDetail = () => {
           onClick={() => navigate("/")}
           style={{ marginTop: 5 }}
         >
-          Back
+          Atras
         </Button>
       </Box>
     </Grid>

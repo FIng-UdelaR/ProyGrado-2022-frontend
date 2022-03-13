@@ -32,23 +32,23 @@ const NavBar = () => {
       <SidebarContent>
         <Menu iconShape="square">
           <MenuItem icon={<FaGem />}>
-            Home
+            Inicio
             <Link to="/" />
           </MenuItem>
           <MenuItem icon={<FaGem />}>
-            Machine Managment
+            Lista de impresoras
             <Link to="/machine/list" />
           </MenuItem>
           <MenuItem icon={<FaGem />}>
-            New Machine
+            Nueva impresora
             <Link to={"/machine/new"} className="text-light" />
           </MenuItem>
           <MenuItem icon={<FaGem />}>
-            New Flow
+            Nueva orden
             <Link to={"/machine/newWorkFlow"} className="text-light" />
           </MenuItem>
           <MenuItem icon={<FaGem />}>
-            Orders
+            Lista de órdenes
             <Link to={"/orders"} className="text-light" />
           </MenuItem>
         </Menu>

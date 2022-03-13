@@ -10,9 +10,11 @@ import {
   AlertTitle,
   Button,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import GoogleMap from "../googleMap";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +48,7 @@ const NewWorkFlows = () => {
   };
 
   useEffect(() => {
-    if (task.material > 0 && task.size > 0 && task.quality > 0) {
+    if (task.material !== "" && task.size !== "" && task.quality !== "") {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -85,155 +87,156 @@ const NewWorkFlows = () => {
   };
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-md-8">
-        <div className="card">
-          <div className="card-body">
-            <h2 className="text-center mb-4 font-weight-bold">
-              Add new work flow
-            </h2>
+    <Grid container width={"80%"}>
+      <Typography
+        variant="h4"
+        sx={{
+          margin: 2,
+          fontFamily: "sans-serif",
+          fontWeight: "bold",
+          textAlign: "center",
+        }}
+      >
+        Agregar nueva orden
+      </Typography>
 
-            {alert ? <p className={alert.classes}> {alert.msg} </p> : null}
+      {alert ? <p className={alert.classes}> {alert.msg} </p> : null}
 
-            <form onSubmit={submitNewWorkFlow}>
-              <Box
-                sx={{
-                  m: 1,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
-                }}
+      <Grid item xs={12}>
+        <form onSubmit={submitNewWorkFlow}>
+          <Box
+            sx={{
+              m: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              <FormControl sx={{ m: 1, minWidth: 300 }}>
+                <InputLabel id="supportedMaterial-label">Material</InputLabel>
+                <Select
+                  labelId="supportedMaterial-label"
+                  id="supportedMaterial"
+                  onChange={handleSelectChange("material")}
+                  autoWidth
+                  label="Material"
+                  value={task.material}
+                >
+                  {Object.keys(Material).map((m, index) => (
+                    <MenuItem value={index}>{m}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            <div>
+              <FormControl sx={{ m: 1, minWidth: 300 }}>
+                <InputLabel id="supportedMaterial-label">Tamaño</InputLabel>
+                <Select
+                  labelId="size-label"
+                  id="size"
+                  onChange={handleSelectChange("size")}
+                  autoWidth
+                  label="Size"
+                  value={task.size}
+                >
+                  {Object.keys(Sizes).map((s, index) => (
+                    <MenuItem value={index}>{s}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            <div>
+              <FormControl sx={{ m: 1, minWidth: 300 }}>
+                <InputLabel id="quality-label">Calidad</InputLabel>
+                <Select
+                  labelId="quality-label"
+                  id="quality"
+                  onChange={handleSelectChange("quality")}
+                  autoWidth
+                  label="Quality"
+                  value={task.quality}
+                >
+                  {Object.keys(Qualities).map((q, index) => (
+                    <MenuItem value={index}>{q}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div>
+              <Button
+                style={{ width: "150px", height: "100%" }}
+                variant="contained"
+                disabled={isDisabled}
+                onClick={addTask}
               >
-                <div>
-                  <FormControl sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="supportedMaterial-label">
-                      Material
-                    </InputLabel>
-                    <Select
-                      labelId="supportedMaterial-label"
-                      id="supportedMaterial"
-                      onChange={handleSelectChange("material")}
-                      autoWidth
-                      label="Material"
-                      value={task.material}
-                    >
-                      {Object.keys(Material).map((m, index) => (
-                        <MenuItem value={index}>{m}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
+                Agregar tarea
+              </Button>
+            </div>
+            <Box
+              sx={{
+                m: 1,
+                minWidth: "100%",
+                minHeight: 150,
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              {workFlow.map((task) => {
+                return <WorkFlowCard task={task} />;
+              })}
+            </Box>
+            <Box
+              component="form"
+              sx={{ m: 1, minWidth: "100%", minHeight: 500 }}
+            >
+              <GoogleMap
+                location={location}
+                setLocation={setLocation}
+                isMarkable={true}
+              />
+            </Box>
 
-                <div>
-                  <FormControl sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="supportedMaterial-label">Size</InputLabel>
-                    <Select
-                      labelId="size-label"
-                      id="size"
-                      onChange={handleSelectChange("size")}
-                      autoWidth
-                      label="Size"
-                      value={task.size}
-                    >
-                      {Object.keys(Sizes).map((s, index) => (
-                        <MenuItem value={index}>{s}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "flex-end",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Button
+                style={{ width: "45%" }}
+                onClick={() => navigate("/")}
+                variant="contained"
+              >
+                Atras
+              </Button>
 
-                <div>
-                  <FormControl sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="quality-label">Quality</InputLabel>
-                    <Select
-                      labelId="quality-label"
-                      id="quality"
-                      onChange={handleSelectChange("quality")}
-                      autoWidth
-                      label="Quality"
-                      value={task.quality}
-                    >
-                      {Object.keys(Qualities).map((q, index) => (
-                        <MenuItem value={index}>{q}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div>
-                  <Button
-                    style={{ width: "150px", height: "100%" }}
-                    variant="contained"
-                    disabled={isDisabled}
-                    onClick={addTask}
-                  >
-                    Add Task
-                  </Button>
-                </div>
-                <Box
-                  sx={{
-                    m: 1,
-                    minWidth: "100%",
-                    minHeight: 150,
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                >
-                  {workFlow.map((task) => {
-                    return <WorkFlowCard task={task} />;
-                  })}
-                </Box>
-                <Box
-                  component="form"
-                  sx={{ m: 1, minWidth: "100%", minHeight: 300 }}
-                >
-                  <GoogleMap
-                    location={location}
-                    setLocation={setLocation}
-                    isMarkable={true}
-                  />
-                </Box>
+              <Button
+                style={{ width: "45%" }}
+                type="submit"
+                variant="contained"
+              >
+                Agregar
+              </Button>
+            </Box>
+          </Box>
+        </form>
+      </Grid>
+      {loading ? <p>Cargando...</p> : null}
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignContent: "flex-end",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
-                  <Button
-                    style={{ width: "45%" }}
-                    onClick={() => navigate("/")}
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-
-                  <Button
-                    style={{ width: "45%" }}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Add
-                  </Button>
-                </Box>
-              </Box>
-            </form>
-
-            {loading ? <p>Loading...</p> : null}
-
-            {error ? (
-              <Alert severity="error">
-                <AlertTitle>Error</AlertTitle>
-                {error}
-              </Alert>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </div>
+      {error ? (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      ) : null}
+    </Grid>
   );
 };
 

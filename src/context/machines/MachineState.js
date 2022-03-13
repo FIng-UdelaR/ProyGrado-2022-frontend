@@ -19,6 +19,7 @@ import clientAxios from "../../config/axios";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { PropsList } from "../../utils/enum";
+import { useNavigate } from "react-router-dom";
 
 const MachineState = (props) => {
   const initialState = {
@@ -28,6 +29,7 @@ const MachineState = (props) => {
     machineToDelete: null,
   };
   const [state, dispatch] = useReducer(MachineReducer, initialState);
+  const navigate = useNavigate();
 
   // Crete new machines
   const createNewMachine = async (machine) => {
@@ -49,7 +51,15 @@ const MachineState = (props) => {
         payload: machine,
       });
       // Alert
-      Swal.fire("Correcto", "La maquina se agregó correctamente", "success");
+      Swal.fire(
+        "Correcto",
+        "La maquina se agregó correctamente",
+        "success"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+        }
+      });
     } catch (error) {
       console.log(error);
       // if had error

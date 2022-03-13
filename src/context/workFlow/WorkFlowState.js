@@ -12,6 +12,7 @@ import {
 import clientAxios from "../../config/axios";
 import Swal from "sweetalert2";
 import { PropsList } from "../../utils/enum";
+import { useNavigate } from "react-router-dom";
 
 const WorkFlowState = (props) => {
   const initialState = {
@@ -21,7 +22,7 @@ const WorkFlowState = (props) => {
     machineToDelete: null,
   };
   const [state, dispatch] = useReducer(WorkFlowReducer, initialState);
-
+  const navigate = useNavigate();
   // Crete new workFlows
   const createNewWorkFlowAction = async (workFlow) => {
     dispatch({
@@ -40,7 +41,15 @@ const WorkFlowState = (props) => {
       });
 
       // Alert
-      Swal.fire("Correcto", "La maquina se agregó correctamente", "success");
+      Swal.fire(
+        "Correcto",
+        "La orden fue creada correctamente",
+        "success"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/orders");
+        }
+      });
     } catch (error) {
       console.log(error.response.data);
       // if had error

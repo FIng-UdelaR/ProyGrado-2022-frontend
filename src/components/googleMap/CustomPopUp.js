@@ -1,7 +1,7 @@
 import { Popover, Typography } from "@mui/material";
 
-const CustomPopUp = ({ id, anchorEl, handleClose, open }) => {
-  return (
+const CustomPopUp = ({ id, anchorEl, handleClose, open, selectedMachine }) => {
+  return selectedMachine ? (
     <Popover
       id={id}
       open={open}
@@ -16,8 +16,10 @@ const CustomPopUp = ({ id, anchorEl, handleClose, open }) => {
         horizontal: "center",
       }}
     >
-      <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+      <Typography sx={{ p: 2 }}>{selectedMachine?.name}</Typography>
     </Popover>
+  ) : (
+    <div />
   );
 };
 

@@ -1,6 +1,7 @@
 import { useEffect, useContext } from "react";
-import Machine from "./Machine";
+import MachineElement from "./MachineListElement";
 import MachineContext from "../../context/machines/MachineContext";
+import { Grid, Typography } from "@mui/material";
 
 const MachineList = () => {
   const { getMachines, machines, error, loading } = useContext(MachineContext);
@@ -11,32 +12,46 @@ const MachineList = () => {
 
   return (
     <>
-      <h2 className="text-center my-5">Machine list</h2>
+      <Typography
+        variant="h4"
+        sx={{
+          margin: 2,
+          fontFamily: "sans-serif",
+          fontWeight: "bold",
+        }}
+      >
+        Lista de Impresoras
+      </Typography>
 
       {error ? (
         <p className="font-weight-bold alert alert-danger text-center mt-4">
-          There was an error
+          Hubo un error
         </p>
       ) : null}
 
-      {loading ? <p className="text-center">Loading....</p> : null}
+      {loading ? <p className="text-center">Cargando....</p> : null}
 
-      <table className="table table-striped">
-        <thead className="table-dark">
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">URL</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {machines.length === 0
-            ? "No hay máquinas"
-            : machines.map((machine) => (
-                <Machine key={machine.id} machine={machine} />
-              ))}
-        </tbody>
-      </table>
+      <Grid container width={"80%"}>
+        <Grid
+          container
+          sx={{
+            margin: 2,
+            width: "100%",
+          }}
+        >
+          <Grid item xs={6}>
+            <Typography variant="h6">Nombre</Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="h6">URL</Typography>
+          </Grid>
+        </Grid>
+        {machines.length === 0
+          ? "No hay máquinas"
+          : machines.map((machine) => (
+              <MachineElement key={machine.id} machine={machine} />
+            ))}
+      </Grid>
     </>
   );
 };

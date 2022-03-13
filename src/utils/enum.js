@@ -35,18 +35,18 @@ export const PropsList = {
 };
 
 export const textList = {
-  MachineSupportedMaterial: "Supported material",
-  MachineStatus: "Status",
-  MachineSupportedSizes: "Supported sizes",
-  MachineSupportedQualities: "Supported qualities",
-  MachineLocation: "Location",
+  MachineSupportedMaterial: "Materiales soportados",
+  MachineStatus: "Estado",
+  MachineSupportedSizes: "Tamaños soportados",
+  MachineSupportedQualities: "Calidades soportadas",
+  MachineLocation: "Ubicación",
 };
 
 export const StatusOptions = [
-  { value: "OFFLINE", label: "OFFLINE" },
-  { value: "AVAILABLE", label: "AVAILABLE" },
-  { value: "WORKING", label: "WORKING" },
-  { value: "NEED_MANTEINANCE", label: "NEED_MANTEINANCE" },
+  { value: "OFFLINE", label: "DESCONECTADA" },
+  { value: "AVAILABLE", label: "DISPONIBLE" },
+  { value: "WORKING", label: "TRABAJANDO" },
+  { value: "NEED_MANTEINANCE", label: "REQUIERE MANTENIMIENTO" },
 ];
 
 export const MaterialOptions = [
@@ -59,15 +59,15 @@ export const MaterialOptions = [
 ];
 
 export const SizeOptions = [
-  { value: "SMALL", label: "SMALL" },
-  { value: "MEDIUM", label: "MEDIUM" },
-  { value: "LARGE", label: "LARGE" },
-  { value: "EXTRA_LARGE", label: "EXTRA LARGE" },
+  { value: "SMALL", label: "PEQUEÑO" },
+  { value: "MEDIUM", label: "MEDIANO" },
+  { value: "LARGE", label: "GRANDE" },
+  { value: "EXTRA_LARGE", label: "EXTRA GRANDE" },
 ];
 
 export const QualityOptions = [
-  { value: "LOW", label: "LOW" },
-  { value: "HIGH", label: "HIGH" },
+  { value: "LOW", label: "BAJA" },
+  { value: "HIGH", label: "ALTA" },
 ];
 
 export const WorkStatus = {
